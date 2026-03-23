@@ -1,0 +1,76 @@
+<script type="text/javascript">
+    RED.nodes.registerType('eip-toggle', {
+        category: 'SAEIP',
+        color: '#A3DAF0',
+        defaults: {
+            name: { value: '' },
+            connection: { value: '', type: 'eip-connection', required: true }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-toggle-on",
+        label: function() {
+            return this.name || "EIP Toggle";
+        },
+        paletteLabel: "toggle",
+        inputLabels: "trigger",
+        outputLabels: "result"
+    });
+</script>
+
+<script type="text/html" data-template-name="eip-toggle">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+   <div class="form-row">
+        <label for="node-input-connection"><i class="fa fa-server"></i> Connection</label>
+        <input type="text" id="node-input-connection">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="eip-toggle">
+    <p>Toggle a BOOL tag on the EtherNet/IP PLC.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload.tag.name <span class="property-type">string</span></dt>
+        <dd>The name of the BOOL tag to toggle (e.g., "MyBoolTag")</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload.tag.name <span class="property-type">string</span></dt>
+        <dd>The name of the toggled tag</dd>
+        <dt>payload.previousValue <span class="property-type">boolean</span></dt>
+        <dd>The value before toggling</dd>
+        <dt>payload.newValue <span class="property-type">boolean</span></dt>
+        <dd>The value after toggling</dd>
+        <dt>payload.success <span class="property-type">boolean</span></dt>
+        <dd>Whether the toggle operation was successful</dd>
+        <dt>payload.timestamp <span class="property-type">string</span></dt>
+        <dd>ISO timestamp of when the operation completed</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>This node toggles the value of a BOOL tag on the PLC:</p>
+    <ul>
+        <li><code>false</code> → <code>true</code></li>
+        <li><code>true</code> → <code>false</code></li>
+    </ul>
+    
+    <p>The node first reads the current value, then writes the opposite value.</p>
+    <p><strong>Important:</strong> This node only works with BOOL type tags. An error will be thrown if you try to toggle a non-BOOL tag.</p>
+    
+    <h3>Example Input</h3>
+    <pre>msg.payload = { tag: { name: "MyBoolTag" } };</pre>
+    
+    <h3>Example Output</h3>
+    <pre>msg.payload = {
+    tag: { name: "MyBoolTag" },
+    previousValue: false,
+    newValue: true,
+    success: true,
+    timestamp: "2024-01-15T10:30:00.000Z"
+};</pre>
+</script>

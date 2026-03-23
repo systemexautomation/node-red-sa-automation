@@ -1,0 +1,110 @@
+<script type="text/javascript">
+    RED.nodes.registerType('eip-pulse', {
+        category: 'SAEIP',
+        color: '#DB4BA4',
+        defaults: {
+            name: {value: ""},
+            connection: {value: "", type: "eip-connection", required: true},
+            pulseTime: {value: 1000, validate: function(v) { return v > 0; }}
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-hand-o-up",
+        label: function() {
+            return this.name || ("Pulse (" + this.pulseTime + "ms)");
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        },
+        paletteLabel: "pulse",
+        oneditprepare: function() {
+            // Set up pulse time spinner
+            $("#node-input-pulseTime").spinner({
+                min: 100,
+                max: 60000,
+                step: 100
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="eip-pulse">
+    <div class="form-row">
+        <label for="node-input-connection"><i class="fa fa-plug"></i> Connection</label>
+        <input type="text" id="node-input-connection">
+    </div>
+    <div class="form-row">
+        <label for="node-input-pulseTime"><i class="fa fa-clock-o"></i> Pulse Time (ms)</label>
+        <input type="number" id="node-input-pulseTime" placeholder="1000" min="100" max="60000" step="100">
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="eip-pulse">
+    <p>Pulses a BOOL tag in an EtherNet/IP PLC by setting it to true for a specified duration, then returning it to its original value.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload.tag.name <span class="property-type">string</span></dt>
+        <dd>The name of the BOOL tag to pulse</dd>
+        <dt class="optional">payload.pulseTime <span class="property-type">number</span></dt>
+        <dd>Duration of the pulse in milliseconds (overrides node configuration)</dd>
+    </dl>
+    
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Result of the pulse operation (sent twice: start and end)</dd>
+        <dt>payload.success <span class="property-type">boolean</span></dt>
+        <dd>True if operation succeeded, false otherwise</dd>
+        <dt>payload.tag.name <span class="property-type">string</span></dt>
+        <dd>The name of the tag that was pulsed</dd>
+        <dt>payload.originalValue <span class="property-type">boolean</span></dt>
+        <dd>The original value before pulsing</dd>
+        <dt>payload.currentValue <span class="property-type">boolean</span></dt>
+        <dd>The current value (true during pulse, original value after)</dd>
+        <dt>payload.operation <span class="property-type">string</span></dt>
+        <dd>"pulse_start" or "pulse_end"</dd>
+        <dt>payload.pulseTime <span class="property-type">number</span></dt>
+        <dd>Duration of the pulse in milliseconds</dd>
+        <dt>payload.timestamp <span class="property-type">string</span></dt>
+        <dd>ISO timestamp of the operation</dd>
+    </dl>
+    
+    <h3>Details</h3>
+    <p>This node performs a pulse operation on a BOOL tag:</p>
+    <ol>
+        <li>Reads the current value of the tag</li>
+        <li>Sets the tag to <code>true</code></li>
+        <li>Waits for the specified pulse time</li>
+        <li>Returns the tag to its original value</li>
+    </ol>
+    
+    <p>The node validates that the tag is of BOOL type before attempting the pulse operation. 
+    Only one pulse per tag can be active at a time to prevent conflicts.</p>
+    
+    <p>Two output messages are sent: one when the pulse starts ("pulse_start") and one when it ends ("pulse_end").</p>
+    
+    <h3>Configuration</h3>
+    <ul>
+        <li><strong>Pulse Time</strong>: Default duration in milliseconds (100-60000ms)</li>
+        <li>Can be overridden per message using <code>payload.pulseTime</code> or <code>msg.pulseTime</code></li>
+    </ul>
+    
+    <h3>Input Examples</h3>
+    <pre>
+// Basic format
+msg.payload = {
+    tag: { name: "TriggerButton" }
+};
+
+// With custom pulse time
+msg.payload = {
+    tag: { name: "Program:MainProgram.StartSequence" },
+    pulseTime: 2000
+};
+    </pre>
+</script>

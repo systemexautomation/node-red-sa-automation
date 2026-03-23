@@ -1,0 +1,86 @@
+<script type="text/javascript">
+    RED.nodes.registerType('eip-subscription', {
+        category: 'SAEIP',
+        color: '#8C8CFF',
+        defaults: {
+            name: { value: "" },
+            connection: { value: "", type: "eip-connection", required: true }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-rss-square",
+        label: function() {
+            return this.name || "EIP Subscription";
+        },
+        paletteLabel: "subscription",
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="eip-subscription">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-connection"><i class="fa fa-server"></i> Connection</label>
+        <input type="text" id="node-input-connection">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="eip-subscription">
+    <p>Subscribe to PLC tag changes via EtherNet/IP. Monitors multiple tags and sends updates only when values change.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">array | object</span></dt>
+        <dd>Array of tag names, or object with <code>tags</code> array property</dd>
+        <dt>tags <span class="property-type">array</span></dt>
+        <dd>Alternative way to specify tag names array</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>Object containing tag values and status information</dd>
+        <dt>payload.tags <span class="property-type">object</span></dt>
+        <dd>Object with tag names as keys and current values</dd>
+        <dt>payload.missingTags <span class="property-type">array</span></dt>
+        <dd>Array of tag names that could not be read</dd>
+        <dt>payload.ok <span class="property-type">boolean</span></dt>
+        <dd>True if all tags were read successfully</dd>
+        <dt>payload.status <span class="property-type">string</span></dt>
+        <dd>"success" or "warning" based on read results</dd>
+        <dt>payload.message <span class="property-type">string</span></dt>
+        <dd>Status message (present when there are missing tags)</dd>
+        <dt>timestamp <span class="property-type">Date</span></dt>
+        <dd>Timestamp of when the update occurred</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>This node subscribes to multiple PLC tags and sends updates only when tag values change. The update rate is configured in the connection node.</p>
+    
+    <h3>Input Formats</h3>
+    <ul>
+        <li><code>msg.payload = ["tag1", "tag2", "tag3"]</code></li>
+        <li><code>msg.payload = {tags: ["tag1", "tag2", "tag3"]}</code></li>
+        <li><code>msg.tags = ["tag1", "tag2", "tag3"]</code></li>
+    </ul>
+    
+    <h3>Example Output</h3>
+    <pre><code>{
+  "status": "warning",
+  "message": "Some tags were not found: MISSING.TAG",
+  "missingTags": ["MISSING.TAG"],
+  "tags": {
+    "GENERAL.HMI.In.Reset_All_Sequences": true,
+    "GENERAL.HMI.In.Reset_All_Alarms": false,
+    "MAIN_PROD.HMI.In.Start": true
+  },
+  "ok": false
+}</code></pre>
+    
+    <p><strong>Note:</strong> The node only sends output when tag values change or when subscription is first established.</p>
+</script>

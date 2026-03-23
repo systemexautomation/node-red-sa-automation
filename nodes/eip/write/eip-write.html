@@ -1,0 +1,91 @@
+<script type="text/javascript">
+    RED.nodes.registerType('eip-write', {
+        category: 'SAEIP',
+        color: '#248F56',
+        defaults: {
+            name: { value: "" },
+            connection: { value: "", type: "eip-connection", required: true }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-pencil",
+        label: function() {
+            return this.name || "EIP Write";
+        },
+        paletteLabel: "write",
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="eip-write">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-connection"><i class="fa fa-server"></i> Connection</label>
+        <input type="text" id="node-input-connection">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="eip-write">
+    <p>Write PLC tags dynamically via EtherNet/IP.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload.tag.name <span class="property-type">string</span></dt>
+        <dd>The name of the PLC tag to write</dd>
+        <dt>payload.tag.value <span class="property-type">any</span></dt>
+        <dd>The value to write to the PLC tag</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>payload.tag.name <span class="property-type">string</span></dt>
+        <dd>The name of the tag that was written</dd>
+        <dt>payload.tag.value <span class="property-type">any</span></dt>
+        <dd>The value that was written to the PLC tag</dd>
+        <dt>payload.success <span class="property-type">boolean</span></dt>
+        <dd>Whether the write operation was successful</dd>
+        <dt>payload.timestamp <span class="property-type">string</span></dt>
+        <dd>Timestamp of when the write operation completed</dd>
+        <dt>operation <span class="property-type">string</span></dt>
+        <dd>Always "write" to indicate this was a write operation</dd>
+    </dl>
+
+    <h3>Details</h3>
+    <p>This node writes PLC tags dynamically based on the input message. The tag name and value must be specified in the payload object.</p>
+    
+    <h3>Example Input</h3>
+    <pre>
+// Write a DINT value
+msg.payload = {
+    tag: {
+        name: "Program:MainProgram.Counter",
+        value: 1250
+    }
+};
+
+// Write a BOOL value  
+msg.payload = {
+    tag: {
+        name: "Program:MainProgram.StartButton",
+        value: true
+    }
+};
+    </pre>
+
+    <h3>Example Output</h3>
+    <pre>
+msg.payload = {
+    success: true,
+    tag: {
+        name: "Program:MainProgram.Counter",
+        value: 1250
+    },
+    timestamp: "2024-01-15T10:30:00.000Z"
+};
+    </pre>
+</script>

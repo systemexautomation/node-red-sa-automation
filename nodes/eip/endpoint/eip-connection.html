@@ -1,0 +1,74 @@
+<!-- EIP Connection Configuration Node -->
+<script type="text/javascript">
+    RED.nodes.registerType('eip-connection', {
+        category: 'config',
+        defaults: {
+            name: { value: "" },
+            host: { value: "", required: true, validate: RED.validators.regex(/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^[a-zA-Z0-9.-]+$/) },
+            slot: { value: 0, required: true, validate: RED.validators.number() },
+            timeout: { value: 5000, validate: RED.validators.number() },
+            connTimeout: { value: 5000, validate: RED.validators.number() },
+            updateRate: { value: 100, validate: RED.validators.number() },
+            reconnectTime: { value: 5000, validate: RED.validators.number() }
+        },
+        label: function() {
+            return this.name || (this.host + ":" + this.slot);
+        },
+        icon: "ethernet.png"
+    });
+</script>
+
+<script type="text/html" data-template-name="eip-connection">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-server"></i> PLC Host</label>
+        <input type="text" id="node-config-input-host" placeholder="192.168.1.100">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-slot"><i class="fa fa-plug"></i> Slot</label>
+        <input type="number" id="node-config-input-slot" placeholder="0" min="0" max="30">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-timeout"><i class="fa fa-clock-o"></i> Read Timeout (ms)</label>
+        <input type="number" id="node-config-input-timeout" placeholder="5000" min="100">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-connTimeout"><i class="fa fa-clock-o"></i> Connection Timeout (ms)</label>
+        <input type="number" id="node-config-input-connTimeout" placeholder="5000" min="100">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-updateRate"><i class="fa fa-refresh"></i> Update Rate (ms)</label>
+        <input type="number" id="node-config-input-updateRate" placeholder="1000" min="100">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-reconnectTime"><i class="fa fa-repeat"></i> Reconnect Time (ms)</label>
+        <input type="number" id="node-config-input-reconnectTime" placeholder="5000" min="1000">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="eip-connection">
+    <p>Configuration node for EtherNet/IP PLC connection.</p>
+    <h3>Properties</h3>
+    <dl class="message-properties">
+        <dt>Name <span class="property-type">string</span></dt>
+        <dd>Optional name for this connection</dd>
+        <dt>PLC Host <span class="property-type">string</span></dt>
+        <dd>IP address or hostname of the PLC</dd>
+        <dt>Slot <span class="property-type">number</span></dt>
+        <dd>PLC slot number (typically 0 for ControlLogix)</dd>
+        <dt>Read Timeout <span class="property-type">number</span></dt>
+        <dd>Timeout for read operations in milliseconds</dd>
+        <dt>Connection Timeout <span class="property-type">number</span></dt>
+        <dd>Timeout for connection establishment in milliseconds</dd>
+        <dt>Update Rate <span class="property-type">number</span></dt>
+        <dd>How often to check for tag changes in milliseconds (for subscriptions)</dd>
+        <dt>Reconnect Time <span class="property-type">number</span></dt>
+        <dd>Time to wait before attempting reconnection after connection loss in milliseconds</dd>
+    </dl>
+    <h3>Details</h3>
+    <p>This configuration node manages the connection to an EtherNet/IP compatible PLC.
+    It handles automatic reconnection and connection sharing between multiple read/write nodes.</p>
+</script>

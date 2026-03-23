@@ -1,0 +1,38 @@
+{
+  "name": "node-red-sa-automation",
+  "version": "3.0.0",
+  "description": "Systemex Automation Node-RED package: EtherNet/IP, Siemens S7, OPC-UA, SNMP, PostgreSQL",
+  "node-red": {
+    "version": ">=3.0.0",
+    "nodes": {
+      "eip-connection":   "nodes/eip/endpoint/eip-connection.js",
+      "eip-subscription": "nodes/eip/subscription/eip-subscription.js",
+      "eip-write":        "nodes/eip/write/eip-write.js",
+      "eip-toggle":       "nodes/eip/toggle/eip-toggle.js",
+      "eip-pulse":        "nodes/eip/pulse/eip-pulse.js"
+    }
+  },
+  "scripts": {
+    "pack": "npm pack"
+  },
+  "dependencies": {
+    "st-ethernet-ip": "^2.7.5"
+  },
+  "bundleDependencies": [
+    "st-ethernet-ip"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [
+    "node-red",
+    "ethernet-ip",
+    "siemens",
+    "s7",
+    "opc-ua",
+    "codesys",
+    "plc",
+    "automation"
+  ],
+  "license": "MIT"
+}
