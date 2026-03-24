@@ -1567,31 +1567,6 @@
     ]
   },
   {
-    "id": "em_inject_start",
-    "type": "inject",
-    "z": "drv_eip_tab",
-    "name": "Subscribe on Start",
-    "props": [
-      {
-        "p": "payload"
-      }
-    ],
-    "repeat": "300",
-    "crontab": "",
-    "once": true,
-    "onceDelay": 2,
-    "topic": "",
-    "payload": "{}",
-    "payloadType": "json",
-    "x": 190,
-    "y": 140,
-    "wires": [
-      [
-        "em_fn_build_tags"
-      ]
-    ]
-  },
-  {
     "id": "em_fn_build_tags",
     "type": "function",
     "z": "drv_eip_tab",
@@ -1735,31 +1710,6 @@
     "y": 340,
     "wires": [
       []
-    ]
-  },
-  {
-    "id": "zm_inject_start",
-    "type": "inject",
-    "z": "drv_eip_tab",
-    "name": "Subscribe on Start",
-    "props": [
-      {
-        "p": "payload"
-      }
-    ],
-    "repeat": "300",
-    "crontab": "",
-    "once": true,
-    "onceDelay": 1,
-    "topic": "",
-    "payload": "{}",
-    "payloadType": "json",
-    "x": 190,
-    "y": 140,
-    "wires": [
-      [
-        "zm_fn_build_tags"
-      ]
     ]
   },
   {
@@ -3796,31 +3746,6 @@
     ]
   },
   {
-    "id": "pm_inject_poll",
-    "type": "inject",
-    "z": "pm_tab",
-    "g": "9b63151e22342200",
-    "name": "Poll Every 5s",
-    "props": [
-      {
-        "p": "payload"
-      }
-    ],
-    "repeat": "5",
-    "crontab": "",
-    "once": true,
-    "onceDelay": 0.5,
-    "payload": "{}",
-    "payloadType": "json",
-    "x": 180,
-    "y": 540,
-    "wires": [
-      [
-        "13a34dcab43149ca"
-      ]
-    ]
-  },
-  {
     "id": "pm_fn_build_list",
     "type": "function",
     "z": "pm_tab",
@@ -4111,31 +4036,6 @@
     "wires": []
   },
   {
-    "id": "62d93ce61c2ad7d9",
-    "type": "inject",
-    "z": "pm_tab",
-    "g": "237caeda113367e0",
-    "name": "Init on Start",
-    "props": [
-      {
-        "p": "topic",
-        "vt": "str"
-      }
-    ],
-    "repeat": "",
-    "crontab": "",
-    "once": true,
-    "onceDelay": "0",
-    "topic": "",
-    "x": 170,
-    "y": 100,
-    "wires": [
-      [
-        "bc7d014065a5b8d1"
-      ]
-    ]
-  },
-  {
     "id": "bc7d014065a5b8d1",
     "type": "function",
     "z": "pm_tab",
@@ -4153,36 +4053,6 @@
     "wires": [
       [
         "90ba7fc0320d9a06"
-      ]
-    ]
-  },
-  {
-    "id": "e40617beec3e54a6",
-    "type": "inject",
-    "z": "pm_tab",
-    "g": "f64846e3f378fba1",
-    "name": "Poll Zebra 500ms",
-    "props": [
-      {
-        "p": "payload"
-      },
-      {
-        "p": "topic",
-        "vt": "str"
-      }
-    ],
-    "repeat": "0.5",
-    "crontab": "",
-    "once": true,
-    "onceDelay": "3",
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 190,
-    "y": 780,
-    "wires": [
-      [
-        "19e1be3bbcbf8432"
       ]
     ]
   },
@@ -4235,36 +4105,6 @@
       ],
       [
         "495ac3c8e09b300c"
-      ]
-    ]
-  },
-  {
-    "id": "143303a7212bd828",
-    "type": "inject",
-    "z": "pm_tab",
-    "g": "5bd93563f1d09fd4",
-    "name": "Poll Brother 5s",
-    "props": [
-      {
-        "p": "payload"
-      },
-      {
-        "p": "topic",
-        "vt": "str"
-      }
-    ],
-    "repeat": "5",
-    "crontab": "",
-    "once": true,
-    "onceDelay": "3",
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 180,
-    "y": 1020,
-    "wires": [
-      [
-        "2bb6aae848dbfc46"
       ]
     ]
   },
@@ -4336,36 +4176,6 @@
     ]
   },
   {
-    "id": "2ce6dd0666e20dac",
-    "type": "inject",
-    "z": "pm_tab",
-    "g": "1136f30bab202ab5",
-    "name": "Poll RFID 5s",
-    "props": [
-      {
-        "p": "payload"
-      },
-      {
-        "p": "topic",
-        "vt": "str"
-      }
-    ],
-    "repeat": "5",
-    "crontab": "",
-    "once": true,
-    "onceDelay": "3",
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 180,
-    "y": 1220,
-    "wires": [
-      [
-        "d7b0be8576de1678"
-      ]
-    ]
-  },
-  {
     "id": "d7b0be8576de1678",
     "type": "function",
     "z": "pm_tab",
@@ -4432,7 +4242,7 @@
     "z": "pm_tab",
     "g": "9b63151e22342200",
     "name": "Manage Epson TCP",
-    "func": "const sockets = context.get('epsonSockets') || {};\nconst printers = (global.get('printerList') || []).filter(p => p.type === 'EPSON_CW6500');\n\nprinters.forEach(p => {\n    if (sockets[p.name] && !sockets[p.name].destroyed) return;\n\n    const socket = new net.Socket();\n    sockets[p.name] = socket;\n\n    socket.connect(p.rawPort || 9100, p.ip, () => {\n        node.log('Epson TCP connected: ' + p.name);\n        context.set(p.name + '_errTime', 0);\n    });\n\n    socket.on('data', data => {\n        node.send({ topic: p.name, payload: data.toString('utf8') });\n    });\n\n    socket.on('error', err => {\n        const lastErr = context.get(p.name + '_errTime') || 0;\n        if (Date.now() - lastErr > 60000) {\n            node.warn('Epson TCP error ' + p.name + ': ' + err.message);\n            context.set(p.name + '_errTime', Date.now());\n        }\n        socket.destroy();\n        delete sockets[p.name];\n    });\n\n    socket.on('close', () => {\n        delete sockets[p.name];\n    });\n});\n\ncontext.set('epsonSockets', sockets);\nreturn null;",
+    "func": "const sockets = context.get('epsonSockets') || {};\nconst printers = (global.get('printerList') || []).filter(p => p.type === 'EPSON_CW6500');\nif (printers.length === 0) return null;\n\nprinters.forEach(p => {\n    if (sockets[p.name] && !sockets[p.name].destroyed) return;\n\n    const socket = new net.Socket();\n    sockets[p.name] = socket;\n\n    socket.connect(p.rawPort || 9100, p.ip, () => {\n        node.log('Epson TCP connected: ' + p.name);\n        context.set(p.name + '_errTime', 0);\n    });\n\n    socket.on('data', data => {\n        node.send({ topic: p.name, payload: data.toString('utf8') });\n    });\n\n    socket.on('error', err => {\n        const lastErr = context.get(p.name + '_errTime') || 0;\n        if (Date.now() - lastErr > 60000) {\n            node.warn('Epson TCP error ' + p.name + ': ' + err.message);\n            context.set(p.name + '_errTime', Date.now());\n        }\n        socket.destroy();\n        delete sockets[p.name];\n    });\n\n    socket.on('close', () => {\n        delete sockets[p.name];\n    });\n});\n\ncontext.set('epsonSockets', sockets);\nreturn null;",
     "outputs": 1,
     "timeout": 0,
     "noerr": 0,
@@ -4844,31 +4654,6 @@
     "wires": []
   },
   {
-    "id": "4e054186b859aa25",
-    "type": "inject",
-    "z": "pm_tab",
-    "g": "5becc77e390a25c6",
-    "name": "Poll Every 5s",
-    "props": [
-      {
-        "p": "payload"
-      }
-    ],
-    "repeat": "5",
-    "crontab": "",
-    "once": true,
-    "onceDelay": 0.5,
-    "payload": "{}",
-    "payloadType": "json",
-    "x": 180,
-    "y": 280,
-    "wires": [
-      [
-        "pm_fn_build_list"
-      ]
-    ]
-  },
-  {
     "id": "b7318824bf99d621",
     "type": "link out",
     "z": "pm_tab",
@@ -4922,38 +4707,12 @@
     ]
   },
   {
-    "id": "pc_inject_start",
-    "type": "inject",
-    "z": "pc_tab",
-    "g": "12cd3ec03920a8e0",
-    "name": "Subscribe on Start",
-    "props": [
-      {
-        "p": "payload"
-      }
-    ],
-    "repeat": "300",
-    "crontab": "",
-    "once": true,
-    "onceDelay": 1,
-    "topic": "",
-    "payload": "{}",
-    "payloadType": "json",
-    "x": 170,
-    "y": 1160,
-    "wires": [
-      [
-        "pc_fn_build_tags"
-      ]
-    ]
-  },
-  {
     "id": "pc_fn_build_tags",
     "type": "function",
     "z": "pc_tab",
     "g": "12cd3ec03920a8e0",
     "name": "Build PLC Tag List",
-    "func": "const config = global.get('printerConfig') || {};\nconst printers = global.get('printerList') || [];\nconst tags = [];\n\nprinters.forEach(p => {\n    const schema = (config.subscribeTags || {})[p.type] || ['DataReady', 'Print', 'File_Path'];\n    schema.forEach(tag => tags.push(p.equipment + '.Printer.' + tag));\n});\n\nmsg.payload = { tags };\nreturn msg;",
+    "func": "const config = global.get('printerConfig') || {};\nconst printers = global.get('printerList') || [];\nconst tags = [];\n\nprinters.forEach(p => {\n    const schema = (config.subscribeTags || {})[p.type] || ['DataReady', 'Print', 'File_Path'];\n    schema.forEach(tag => tags.push(p.equipment + '.Printer.' + tag));\n});\n\nif (tags.length === 0) return null;\nmsg.payload = { tags };\nreturn msg;",
     "outputs": 1,
     "timeout": 0,
     "noerr": 0,
@@ -5257,36 +5016,6 @@
     ]
   },
   {
-    "id": "7fc07398f8de0ad2",
-    "type": "inject",
-    "z": "pc_tab",
-    "g": "686f0e8ea68a3481",
-    "name": "Monitor Brother Jobs 1s",
-    "props": [
-      {
-        "p": "payload"
-      },
-      {
-        "p": "topic",
-        "vt": "str"
-      }
-    ],
-    "repeat": "1",
-    "crontab": "",
-    "once": true,
-    "onceDelay": "3",
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 630,
-    "y": 920,
-    "wires": [
-      [
-        "c525234faa7e9f4c"
-      ]
-    ]
-  },
-  {
     "id": "c525234faa7e9f4c",
     "type": "function",
     "z": "pc_tab",
@@ -5392,36 +5121,6 @@
     "wires": [
       [
         "pc_eip_write"
-      ]
-    ]
-  },
-  {
-    "id": "d4dc8660e6b9ada8",
-    "type": "inject",
-    "z": "pc_tab",
-    "g": "6e938a412a5e9fc3",
-    "name": "Check Job Timeout 30s",
-    "props": [
-      {
-        "p": "payload"
-      },
-      {
-        "p": "topic",
-        "vt": "str"
-      }
-    ],
-    "repeat": "30",
-    "crontab": "",
-    "once": true,
-    "onceDelay": "10",
-    "topic": "",
-    "payload": "",
-    "payloadType": "date",
-    "x": 870,
-    "y": 140,
-    "wires": [
-      [
-        "0c949928734479ee"
       ]
     ]
   },
@@ -6319,30 +6018,6 @@
     "x": 530,
     "y": 340,
     "wires": []
-  },
-  {
-    "id": "srv_inject",
-    "type": "inject",
-    "z": "plant_tab",
-    "g": "srv_canvas_group",
-    "name": "Poll Every 10s",
-    "props": [
-      {
-        "p": "payload"
-      }
-    ],
-    "repeat": "10",
-    "once": true,
-    "onceDelay": 5,
-    "payload": "{}",
-    "payloadType": "json",
-    "x": 180,
-    "y": 540,
-    "wires": [
-      [
-        "srv_fn_req"
-      ]
-    ]
   },
   {
     "id": "srv_fn_req",
@@ -8293,6 +7968,434 @@
     "wires": [
       [
         "alarm_fn_clear"
+      ]
+    ]
+  },
+  {
+    "id": "cfg_tick_group",
+    "type": "group",
+    "z": "39bd3d850371b256",
+    "name": "Tick Clock (0.5s base)",
+    "style": {
+      "stroke": "#999999",
+      "stroke-opacity": "1",
+      "fill": "#eaf4fb",
+      "fill-opacity": "0.5",
+      "label": true,
+      "label-position": "nw",
+      "color": "#555555"
+    },
+    "nodes": [
+      "cfg_tick_inject",
+      "cfg_tick_fn",
+      "cfg_tick_lo_05",
+      "cfg_tick_lo_1",
+      "cfg_tick_lo_5",
+      "cfg_tick_lo_10",
+      "cfg_tick_lo_30",
+      "cfg_tick_lo_300",
+      "cfg_startup_inject",
+      "cfg_startup_lo"
+    ],
+    "x": 24,
+    "y": 900,
+    "w": 780,
+    "h": 182
+  },
+  {
+    "id": "cfg_tick_inject",
+    "type": "inject",
+    "z": "39bd3d850371b256",
+    "g": "cfg_tick_group",
+    "name": "0.5s Clock",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "0.5",
+    "once": true,
+    "onceDelay": 1,
+    "payload": "{}",
+    "payloadType": "json",
+    "x": 100,
+    "y": 960,
+    "wires": [
+      [
+        "cfg_tick_fn"
+      ]
+    ]
+  },
+  {
+    "id": "cfg_tick_fn",
+    "type": "function",
+    "z": "39bd3d850371b256",
+    "g": "cfg_tick_group",
+    "name": "Tick Counter",
+    "outputs": 6,
+    "func": "let count = (context.get('tick') || 0) + 1;\nif (count >= 600) count = 0;\ncontext.set('tick', count);\nconst t = { payload: count };\nreturn [\n    t,                                    // 0.5s — every tick\n    count % 2   === 0 ? t : null,         // 1s\n    count % 10  === 0 ? t : null,         // 5s\n    count % 20  === 0 ? t : null,         // 10s\n    count % 60  === 0 ? t : null,         // 30s\n    count % 600 === 0 ? t : null,         // 300s\n];",
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 300,
+    "y": 960,
+    "wires": [
+      [
+        "cfg_tick_lo_05"
+      ],
+      [
+        "cfg_tick_lo_1"
+      ],
+      [
+        "cfg_tick_lo_5"
+      ],
+      [
+        "cfg_tick_lo_10"
+      ],
+      [
+        "cfg_tick_lo_30"
+      ],
+      [
+        "cfg_tick_lo_300"
+      ]
+    ]
+  },
+  {
+    "id": "cfg_tick_lo_05",
+    "type": "link out",
+    "z": "39bd3d850371b256",
+    "g": "cfg_tick_group",
+    "name": "tick/0.5s",
+    "mode": "link",
+    "links": [
+      "li_05_zebra"
+    ],
+    "x": 540,
+    "y": 960,
+    "wires": []
+  },
+  {
+    "id": "cfg_tick_lo_1",
+    "type": "link out",
+    "z": "39bd3d850371b256",
+    "g": "cfg_tick_group",
+    "name": "tick/1s",
+    "mode": "link",
+    "links": [
+      "li_1_brother"
+    ],
+    "x": 540,
+    "y": 970,
+    "wires": []
+  },
+  {
+    "id": "cfg_tick_lo_5",
+    "type": "link out",
+    "z": "39bd3d850371b256",
+    "g": "cfg_tick_group",
+    "name": "tick/5s",
+    "mode": "link",
+    "links": [
+      "li_5_epson",
+      "li_5_brother",
+      "li_5_rfid",
+      "li_5_snmp"
+    ],
+    "x": 540,
+    "y": 980,
+    "wires": []
+  },
+  {
+    "id": "cfg_tick_lo_10",
+    "type": "link out",
+    "z": "39bd3d850371b256",
+    "g": "cfg_tick_group",
+    "name": "tick/10s",
+    "mode": "link",
+    "links": [
+      "li_10_srv"
+    ],
+    "x": 540,
+    "y": 990,
+    "wires": []
+  },
+  {
+    "id": "cfg_tick_lo_30",
+    "type": "link out",
+    "z": "39bd3d850371b256",
+    "g": "cfg_tick_group",
+    "name": "tick/30s",
+    "mode": "link",
+    "links": [
+      "li_30_timeout"
+    ],
+    "x": 540,
+    "y": 1000,
+    "wires": []
+  },
+  {
+    "id": "cfg_tick_lo_300",
+    "type": "link out",
+    "z": "39bd3d850371b256",
+    "g": "cfg_tick_group",
+    "name": "tick/300s",
+    "mode": "link",
+    "links": [
+      "li_300_em",
+      "li_300_zm",
+      "li_300_pc"
+    ],
+    "x": 540,
+    "y": 1010,
+    "wires": []
+  },
+  {
+    "id": "cfg_startup_inject",
+    "type": "inject",
+    "z": "39bd3d850371b256",
+    "g": "cfg_tick_group",
+    "name": "Startup (5s delay)",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "once": true,
+    "onceDelay": 5,
+    "payload": "{}",
+    "payloadType": "json",
+    "x": 100,
+    "y": 1040,
+    "wires": [
+      [
+        "cfg_startup_lo"
+      ]
+    ]
+  },
+  {
+    "id": "cfg_startup_lo",
+    "type": "link out",
+    "z": "39bd3d850371b256",
+    "g": "cfg_tick_group",
+    "name": "startup",
+    "mode": "link",
+    "links": [
+      "li_startup_init",
+      "li_300_em",
+      "li_300_zm",
+      "li_300_pc"
+    ],
+    "x": 540,
+    "y": 1040,
+    "wires": []
+  },
+  {
+    "id": "li_300_em",
+    "type": "link in",
+    "z": "drv_eip_tab",
+    "g": null,
+    "name": "tick/300s+startup",
+    "links": [
+      "cfg_tick_lo_300",
+      "cfg_startup_lo"
+    ],
+    "x": 190,
+    "y": 140,
+    "wires": [
+      [
+        "em_fn_build_tags"
+      ]
+    ]
+  },
+  {
+    "id": "li_300_zm",
+    "type": "link in",
+    "z": "drv_eip_tab",
+    "g": null,
+    "name": "tick/300s+startup",
+    "links": [
+      "cfg_tick_lo_300",
+      "cfg_startup_lo"
+    ],
+    "x": 190,
+    "y": 120,
+    "wires": [
+      [
+        "zm_fn_build_tags"
+      ]
+    ]
+  },
+  {
+    "id": "li_05_zebra",
+    "type": "link in",
+    "z": "pm_tab",
+    "g": "f64846e3f378fba1",
+    "name": "tick/0.5s",
+    "links": [
+      "cfg_tick_lo_05"
+    ],
+    "x": 190,
+    "y": 780,
+    "wires": [
+      [
+        "19e1be3bbcbf8432"
+      ]
+    ]
+  },
+  {
+    "id": "li_5_epson",
+    "type": "link in",
+    "z": "pm_tab",
+    "g": "9b63151e22342200",
+    "name": "tick/5s",
+    "links": [
+      "cfg_tick_lo_5"
+    ],
+    "x": 180,
+    "y": 540,
+    "wires": [
+      [
+        "13a34dcab43149ca"
+      ]
+    ]
+  },
+  {
+    "id": "li_5_brother",
+    "type": "link in",
+    "z": "pm_tab",
+    "g": "5bd93563f1d09fd4",
+    "name": "tick/5s",
+    "links": [
+      "cfg_tick_lo_5"
+    ],
+    "x": 180,
+    "y": 1020,
+    "wires": [
+      [
+        "2bb6aae848dbfc46"
+      ]
+    ]
+  },
+  {
+    "id": "li_5_rfid",
+    "type": "link in",
+    "z": "pm_tab",
+    "g": "1136f30bab202ab5",
+    "name": "tick/5s",
+    "links": [
+      "cfg_tick_lo_5"
+    ],
+    "x": 180,
+    "y": 1220,
+    "wires": [
+      [
+        "d7b0be8576de1678"
+      ]
+    ]
+  },
+  {
+    "id": "li_5_snmp",
+    "type": "link in",
+    "z": "pm_tab",
+    "g": "5becc77e390a25c6",
+    "name": "tick/5s",
+    "links": [
+      "cfg_tick_lo_5"
+    ],
+    "x": 180,
+    "y": 280,
+    "wires": [
+      [
+        "pm_fn_build_list"
+      ]
+    ]
+  },
+  {
+    "id": "li_startup_init",
+    "type": "link in",
+    "z": "pm_tab",
+    "g": "237caeda113367e0",
+    "name": "startup",
+    "links": [
+      "cfg_startup_lo"
+    ],
+    "x": 170,
+    "y": 100,
+    "wires": [
+      [
+        "bc7d014065a5b8d1"
+      ]
+    ]
+  },
+  {
+    "id": "li_300_pc",
+    "type": "link in",
+    "z": "pc_tab",
+    "g": "12cd3ec03920a8e0",
+    "name": "tick/300s+startup",
+    "links": [
+      "cfg_tick_lo_300",
+      "cfg_startup_lo"
+    ],
+    "x": 170,
+    "y": 1160,
+    "wires": [
+      [
+        "pc_fn_build_tags"
+      ]
+    ]
+  },
+  {
+    "id": "li_1_brother",
+    "type": "link in",
+    "z": "pc_tab",
+    "g": "686f0e8ea68a3481",
+    "name": "tick/1s",
+    "links": [
+      "cfg_tick_lo_1"
+    ],
+    "x": 630,
+    "y": 920,
+    "wires": [
+      [
+        "c525234faa7e9f4c"
+      ]
+    ]
+  },
+  {
+    "id": "li_30_timeout",
+    "type": "link in",
+    "z": "pc_tab",
+    "g": "6e938a412a5e9fc3",
+    "name": "tick/30s",
+    "links": [
+      "cfg_tick_lo_30"
+    ],
+    "x": 870,
+    "y": 140,
+    "wires": [
+      [
+        "0c949928734479ee"
+      ]
+    ]
+  },
+  {
+    "id": "li_10_srv",
+    "type": "link in",
+    "z": "plant_tab",
+    "g": "srv_canvas_group",
+    "name": "tick/10s",
+    "links": [
+      "cfg_tick_lo_10"
+    ],
+    "x": 180,
+    "y": 540,
+    "wires": [
+      [
+        "srv_fn_req"
       ]
     ]
   }
