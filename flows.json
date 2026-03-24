@@ -1432,7 +1432,7 @@
     "y": 620,
     "wires": [
       [
-        "4b0f5a9caa731c3c"
+        "cfg_pg_create_alarms"
       ]
     ]
   },
@@ -8186,7 +8186,8 @@
       "li_startup_init",
       "li_300_em",
       "li_300_zm",
-      "li_300_pc"
+      "li_300_pc",
+      "alm_dash_link_in"
     ],
     "x": 540,
     "y": 1040,
@@ -8396,6 +8397,24 @@
     "wires": [
       [
         "srv_fn_req"
+      ]
+    ]
+  },
+  {
+    "id": "cfg_pg_create_alarms",
+    "type": "postgresql",
+    "z": "39bd3d850371b256",
+    "name": "CREATE alarms",
+    "query": "CREATE TABLE IF NOT EXISTS alarms (\n    id           SERIAL PRIMARY KEY,\n    source       VARCHAR(50),\n    name         VARCHAR(100),\n    equipment    VARCHAR(100),\n    severity     VARCHAR(20),\n    message      TEXT,\n    alarm_code   INTEGER DEFAULT 0,\n    warning_code INTEGER DEFAULT 0,\n    active       BOOLEAN DEFAULT true,\n    created_at   TIMESTAMPTZ DEFAULT NOW(),\n    acked_at     TIMESTAMPTZ,\n    acked_by     VARCHAR(100),\n    resolved_at  TIMESTAMPTZ\n);\nCREATE UNIQUE INDEX IF NOT EXISTS alarms_equipment_active\n    ON alarms (equipment) WHERE active = true;",
+    "postgreSQLConfig": "46ba13f9dc58019e",
+    "split": false,
+    "rowsPerMsg": 1,
+    "outputs": 1,
+    "x": 310,
+    "y": 700,
+    "wires": [
+      [
+        "4b0f5a9caa731c3c"
       ]
     ]
   }
