@@ -6,8 +6,8 @@ module.exports = function(RED) {
             RED.nodes.createNode(this, config);
 
             this.name = config.name;
-            this.host = config.host;
-            this.slot = parseInt(config.slot) || 0;
+            this.host = process.env.PLC_IP || config.host;
+            this.slot = parseInt(process.env.PLC_SLOT || config.slot) || 0;
             this.timeout = parseInt(config.timeout) || 5000;
             this.connTimeout = parseInt(config.connTimeout) || 5000;
             this.updateRate = parseInt(config.updateRate) || 1000;
