@@ -16,6 +16,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Checkout nodered-flows (latest flows.json)
+        uses: actions/checkout@v4
+        with:
+          repository: systemexautomation/nodered-flows
+          path: nodered-flows
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy latest flows.json
+        run: cp nodered-flows/flows.json flows.json
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
