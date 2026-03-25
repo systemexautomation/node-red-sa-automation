@@ -19,7 +19,7 @@
     "id": "drv_s7_tab",
     "type": "tab",
     "label": "[Driver] S7 (Siemens)",
-    "disabled": true,
+    "disabled": false,
     "info": "",
     "env": []
   },
@@ -27,7 +27,7 @@
     "id": "drv_opc_tab",
     "type": "tab",
     "label": "[Driver] OPC-UA (CODESYS)",
-    "disabled": true,
+    "disabled": false,
     "info": "",
     "env": []
   },
@@ -1447,126 +1447,6 @@
     "wires": []
   },
   {
-    "id": "cfg_drv_inject",
-    "type": "inject",
-    "z": "39bd3d850371b256",
-    "name": "Enable Driver Tab",
-    "props": [
-      {
-        "p": "payload"
-      }
-    ],
-    "repeat": "",
-    "once": true,
-    "onceDelay": 5,
-    "payload": "{}",
-    "payloadType": "json",
-    "x": 150,
-    "y": 760,
-    "wires": [
-      [
-        "cfg_drv_fn_check"
-      ]
-    ]
-  },
-  {
-    "id": "cfg_drv_fn_check",
-    "type": "function",
-    "z": "39bd3d850371b256",
-    "name": "Check Driver + Set Token",
-    "func": "const driver = global.get('plcDriver') || env.get('PLC_DRIVER') || 'eip';\nnode.log('Checking driver tab states for: ' + driver);\nmsg.driver = driver;\nmsg.token = env.get('NR_API_TOKEN') || '';\nmsg.headers = {\n    'Node-RED-API-Version': 'v2',\n    'Authorization': 'Bearer ' + msg.token\n};\nreturn msg;",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 410,
-    "y": 760,
-    "wires": [
-      [
-        "cfg_drv_http_get"
-      ]
-    ]
-  },
-  {
-    "id": "cfg_drv_http_get",
-    "type": "http request",
-    "z": "39bd3d850371b256",
-    "name": "GET /flows",
-    "method": "GET",
-    "ret": "obj",
-    "paytoqs": "ignore",
-    "url": "http://localhost:1880/flows",
-    "tls": "",
-    "persist": false,
-    "proxy": "",
-    "insecureHTTPParser": false,
-    "authType": "",
-    "senderr": true,
-    "headers": [],
-    "x": 650,
-    "y": 760,
-    "wires": [
-      [
-        "cfg_drv_fn_fix"
-      ]
-    ]
-  },
-  {
-    "id": "cfg_drv_fn_fix",
-    "type": "function",
-    "z": "39bd3d850371b256",
-    "name": "Fix Tab Enabled States",
-    "func": "const driver = msg.driver;\nconst token  = msg.token;\nconst flows  = msg.payload && msg.payload.flows;\nif (!flows) { node.warn('Could not read flows from admin API'); return null; }\n\nconst TAB_DRIVER = { 'drv_eip_tab': 'eip', 'drv_s7_tab': 's7', 'drv_opc_tab': 'opc' };\nlet needsUpdate = false;\nconst updated = flows.map(n => {\n    if (n.type !== 'tab' || !TAB_DRIVER[n.id]) return n;\n    const shouldEnable = TAB_DRIVER[n.id] === driver;\n    const isDisabled   = n.disabled === true;\n    if (shouldEnable === isDisabled) {\n        needsUpdate = true;\n        return {...n, disabled: !shouldEnable};\n    }\n    return n;\n});\nif (!needsUpdate) { node.log('Driver tab already correct: ' + driver); return null; }\nnode.log('Enabling driver tab: ' + driver);\nmsg.payload = { flows: updated };\nmsg.headers = {\n    'Content-Type': 'application/json',\n    'Node-RED-API-Version': 'v2',\n    'Node-RED-Deployment-Type': 'reload',\n    'Authorization': 'Bearer ' + token\n};\nreturn msg;",
-    "outputs": 1,
-    "noerr": 0,
-    "initialize": "",
-    "finalize": "",
-    "libs": [],
-    "x": 870,
-    "y": 760,
-    "wires": [
-      [
-        "cfg_drv_http_put"
-      ]
-    ]
-  },
-  {
-    "id": "cfg_drv_http_put",
-    "type": "http request",
-    "z": "39bd3d850371b256",
-    "name": "PUT /flows",
-    "method": "PUT",
-    "ret": "obj",
-    "paytoqs": "ignore",
-    "url": "http://localhost:1880/flows",
-    "tls": "",
-    "persist": false,
-    "proxy": "",
-    "insecureHTTPParser": false,
-    "authType": "",
-    "senderr": true,
-    "headers": [
-      {
-        "keyType": "str",
-        "keyValue": "Content-Type",
-        "valueType": "str",
-        "valueValue": "application/json"
-      },
-      {
-        "keyType": "str",
-        "keyValue": "Node-RED-API-Version",
-        "valueType": "str",
-        "valueValue": "v2"
-      }
-    ],
-    "x": 1110,
-    "y": 760,
-    "wires": [
-      []
-    ]
-  },
-  {
     "id": "em_fn_build_tags",
     "type": "function",
     "z": "drv_eip_tab",
@@ -2143,7 +2023,7 @@
     "type": "function",
     "z": "drv_s7_tab",
     "name": "Route S7 Data",
-    "func": "// Routes variables by prefix: EQ*→equipment, AR*→zone, rest→machine\n// Also caches all values for toggle operations\nif (!msg.payload || typeof msg.payload !== 'object') return [null,null,null];\nconst tags = msg.payload;\n// Update flow cache for toggle\nconst cache = flow.get('s7_cache') || {};\nObject.assign(cache, tags);\nflow.set('s7_cache', cache);\n\nconst eq = {}, zone = {}, machine = {};\nfor (const [k,v] of Object.entries(tags)) {\n    if      (k.startsWith('EQ')) eq[k]      = v;\n    else if (k.startsWith('AR')) zone[k]    = v;\n    else                          machine[k] = v;\n}\nreturn [\n    Object.keys(eq).length      ? {payload:eq}      : null,\n    Object.keys(zone).length    ? {payload:zone}    : null,\n    Object.keys(machine).length ? {payload:machine} : null\n];",
+    "func": "if (global.get('plcDriver') !== 's7') return null;\n// Routes variables by prefix: EQ*→equipment, AR*→zone, rest→machine\n// Also caches all values for toggle operations\nif (!msg.payload || typeof msg.payload !== 'object') return [null,null,null];\nconst tags = msg.payload;\n// Update flow cache for toggle\nconst cache = flow.get('s7_cache') || {};\nObject.assign(cache, tags);\nflow.set('s7_cache', cache);\n\nconst eq = {}, zone = {}, machine = {};\nfor (const [k,v] of Object.entries(tags)) {\n    if      (k.startsWith('EQ')) eq[k]      = v;\n    else if (k.startsWith('AR')) zone[k]    = v;\n    else                          machine[k] = v;\n}\nreturn [\n    Object.keys(eq).length      ? {payload:eq}      : null,\n    Object.keys(zone).length    ? {payload:zone}    : null,\n    Object.keys(machine).length ? {payload:machine} : null\n];",
     "outputs": 3,
     "noerr": 0,
     "initialize": "",
@@ -2804,7 +2684,7 @@
     "type": "function",
     "z": "drv_opc_tab",
     "name": "Build OPC Node IDs",
-    "func": "// Build the list of OPC-UA Node IDs to subscribe to.\n// Adapt namespace (ns=) and path prefix to your CODESYS project.\nconst cfg = global.get('plcConfig') || {};\nconst equipmentList = global.get('equipmentList') || [];\nconst zoneList      = global.get('zoneList')      || [];\n\nconst items = [];\n\n// Machine status nodes (from plcConfig.statusNodes)\nfor (const [topic, nodeId] of Object.entries(cfg.statusNodes || {})) {\n    items.push({ name: topic, nodeId });\n}\n\n// Equipment nodes — adapt variable suffixes to your CODESYS GVL structure\nconst EQ_VARS = ['PE1_Presence','PE2_Presence','CurrentStep','Speed','SuctionCup',\n                 'CY1_Entered','CY1_Exited','CY2_Entered','CY2_Exited'];\nfor (const eq of equipmentList) {\n    const base = 'ns=4;s=|var|Application.GVL.Equipment.' + eq.name;\n    for (const v of EQ_VARS) {\n        items.push({ name: eq.name + '.' + v, nodeId: base + '.' + v });\n    }\n}\n\n// Zone nodes — adapt suffixes to your CODESYS GVL structure\nconst ZONE_VARS = ['Status_Alarm','Status_Running','Status_Stopped','Status_Safety'];\nfor (const z of zoneList) {\n    const base = 'ns=4;s=|var|Application.GVL.' + z.name;\n    for (const v of ZONE_VARS) {\n        items.push({ name: z.name + '.' + v, nodeId: base + '.' + v });\n    }\n}\n\nmsg.payload = items;\nmsg.action  = 'subscribe';\nreturn msg;",
+    "func": "if (global.get('plcDriver') !== 'opc') return null;\n// Build the list of OPC-UA Node IDs to subscribe to.\n// Adapt namespace (ns=) and path prefix to your CODESYS project.\nconst cfg = global.get('plcConfig') || {};\nconst equipmentList = global.get('equipmentList') || [];\nconst zoneList      = global.get('zoneList')      || [];\n\nconst items = [];\n\n// Machine status nodes (from plcConfig.statusNodes)\nfor (const [topic, nodeId] of Object.entries(cfg.statusNodes || {})) {\n    items.push({ name: topic, nodeId });\n}\n\n// Equipment nodes — adapt variable suffixes to your CODESYS GVL structure\nconst EQ_VARS = ['PE1_Presence','PE2_Presence','CurrentStep','Speed','SuctionCup',\n                 'CY1_Entered','CY1_Exited','CY2_Entered','CY2_Exited'];\nfor (const eq of equipmentList) {\n    const base = 'ns=4;s=|var|Application.GVL.Equipment.' + eq.name;\n    for (const v of EQ_VARS) {\n        items.push({ name: eq.name + '.' + v, nodeId: base + '.' + v });\n    }\n}\n\n// Zone nodes — adapt suffixes to your CODESYS GVL structure\nconst ZONE_VARS = ['Status_Alarm','Status_Running','Status_Stopped','Status_Safety'];\nfor (const z of zoneList) {\n    const base = 'ns=4;s=|var|Application.GVL.' + z.name;\n    for (const v of ZONE_VARS) {\n        items.push({ name: z.name + '.' + v, nodeId: base + '.' + v });\n    }\n}\n\nmsg.payload = items;\nmsg.action  = 'subscribe';\nreturn msg;",
     "outputs": 1,
     "noerr": 0,
     "initialize": "",
@@ -2856,7 +2736,7 @@
     "type": "function",
     "z": "drv_opc_tab",
     "name": "Route OPC Data",
-    "func": "// OpcUa-Client subscribe outputs: msg.topic=nodeId, msg.payload=value\nconst nodeId = msg.topic || '';\nconst value  = msg.payload;\n\n// Equipment: contains '.Equipment.EQ'\nif (/\\.Equipment\\.EQ/.test(nodeId)) {\n    const parts = nodeId.split('.');\n    const eqIdx = parts.findIndex(p => /^EQ\\d+/.test(p));\n    if (eqIdx > -1) {\n        const name     = parts[eqIdx];\n        const variable = parts.slice(eqIdx+1).join('.');\n        return [{ topic:'equipment/update', payload:JSON.stringify({name,variable,value}) }, null, null];\n    }\n}\n// Zone: contains AR followed by digits\nconst zoneM = nodeId.match(/\\.(AR\\d+)\\.(.+)/);\nif (zoneM) {\n    return [null, { topic:'zone/'+zoneM[1]+'/'+zoneM[2], payload:value }, null];\n}\n// Machine status: mapped from topic stored in msg.topic\nconst cfg = global.get('plcConfig') || {};\nfor (const [topic, nid] of Object.entries(cfg.statusNodes || {})) {\n    if (nid === nodeId) {\n        return [null, null, { topic, payload:value, retain:true }];\n    }\n}\nreturn null;",
+    "func": "if (global.get('plcDriver') !== 'opc') return null;\n// OpcUa-Client subscribe outputs: msg.topic=nodeId, msg.payload=value\nconst nodeId = msg.topic || '';\nconst value  = msg.payload;\n\n// Equipment: contains '.Equipment.EQ'\nif (/\\.Equipment\\.EQ/.test(nodeId)) {\n    const parts = nodeId.split('.');\n    const eqIdx = parts.findIndex(p => /^EQ\\d+/.test(p));\n    if (eqIdx > -1) {\n        const name     = parts[eqIdx];\n        const variable = parts.slice(eqIdx+1).join('.');\n        return [{ topic:'equipment/update', payload:JSON.stringify({name,variable,value}) }, null, null];\n    }\n}\n// Zone: contains AR followed by digits\nconst zoneM = nodeId.match(/\\.(AR\\d+)\\.(.+)/);\nif (zoneM) {\n    return [null, { topic:'zone/'+zoneM[1]+'/'+zoneM[2], payload:value }, null];\n}\n// Machine status: mapped from topic stored in msg.topic\nconst cfg = global.get('plcConfig') || {};\nfor (const [topic, nid] of Object.entries(cfg.statusNodes || {})) {\n    if (nid === nodeId) {\n        return [null, null, { topic, payload:value, retain:true }];\n    }\n}\nreturn null;",
     "outputs": 3,
     "noerr": 0,
     "initialize": "",
