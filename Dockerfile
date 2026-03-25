@@ -23,4 +23,4 @@ RUN npm install --unsafe-perm node-red-sa-automation-*.tgz \
 # Copy default flows (used on fresh deployments with empty /data volume)
 COPY flows.json /data/flows.json
 
-USER node
+USER node-red
